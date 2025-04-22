@@ -4,17 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Frank Dunn: Memoirs of the North - Stories from Canada's northern RCMP postings">
-    <title>Frank Dunn: Memoirs of the North - (root)</title>
+    
+    {% block title %}
+    <title>Frank Dunn: Memoirs of the North</title>
+    {% endblock %}
     
     <!-- Preload critical resources -->
     <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
-    <link rel="preload" href="/assets/images/chapter_1.png" as="image">
     
     <!-- Tailwind CSS via CDN (temporary until we set up build process) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Favicon -->
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    
+    {% block head_extras %}{% endblock %}
 </head>
 <body class="min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
     <!-- Header -->
@@ -43,7 +47,7 @@
                         <path id="theme-icon" fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
                     </svg>
                 </button>
-                <button id="mobile-menu-button" class="md:hidden p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                <button id="mobile-menu-button" class="md:hidden p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700" aria-label="Toggle menu">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
                     </svg>
@@ -52,17 +56,60 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="relative h-[80vh] flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 overflow-hidden">
-        <div class="container mx-auto px-4 text-center z-10">
-            <h2 class="text-4xl md:text-5xl font-bold mb-4">Stories from Canada's Northern Frontier</h2>
-            <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">RCMP postings, wilderness adventures, and northern life from 1945-1987</p>
-            <a href="/chapters" class="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-lg transition-colors">Start Exploring</a>
-        </div>
-    </section>
+    <div class="flex min-h-[calc(100vh-64px)]">
+        <!-- Sidebar Navigation -->
+        <aside class="hidden md:block w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4">
+            <nav class="space-y-2">
+                <h2 class="font-bold text-lg mb-4">Chapters</h2>
+                {% for chapter in chapters %}
+                <a href="/chapters/{{ chapter.slug }}" class="block hover:text-blue-600 dark:hover:text-blue-400">
+                    {{ chapter.number }}. {{ chapter.title }}
+                </a>
+                {% endfor %}
+            </nav>
+        </aside>
 
-    <!-- Basic JS for theme toggle -->
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-6">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-sm text-gray-500 dark:text-gray-400">&copy; 2025 Frank Dunn: Memoirs of the North. All rights reserved.</p>
+        </div>
+    </footer>
+
+    {% block footer_scripts %}
+    <!-- Mobile menu functionality -->
     <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const sidebar = document.querySelector('aside');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('block');
+            sidebar.classList.toggle('fixed');
+            sidebar.classList.toggle('inset-0');
+            sidebar.classList.toggle('z-40');
+            sidebar.classList.toggle('bg-white');
+            sidebar.classList.toggle('dark:bg-gray-800');
+            sidebar.classList.toggle('p-4');
+            sidebar.classList.toggle('overflow-y-auto');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!sidebar.contains(e.target) && e.target !== mobileMenuButton) {
+                sidebar.classList.add('hidden');
+                sidebar.classList.remove('block', 'fixed', 'inset-0', 'z-40', 'bg-white', 'dark:bg-gray-800', 'p-4', 'overflow-y-auto');
+            }
+        });
+
+        // Basic JS for theme toggle
         // Theme toggle functionality
         const themeToggle = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
@@ -87,5 +134,6 @@
             }
         });
     </script>
+    {% endblock %}
 </body>
 </html>

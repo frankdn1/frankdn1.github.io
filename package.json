@@ -4,8 +4,10 @@
   "description": "Frank Dunn: Memoirs of the North - Static Website",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build:content": "python3 build.py --clean",
+    "build:assets": "vite build && echo '/* /index.html 200' > dist/_redirects",
     "preview": "vite preview",
+    "full-build": "npm run build:content && npm run build:assets",
     "tailwind:build": "tailwindcss -i ./src/styles.css -o ./assets/css/styles.css --minify",
     "tailwind:watch": "tailwindcss -i ./src/styles.css -o ./assets/css/styles.css --watch"
   },

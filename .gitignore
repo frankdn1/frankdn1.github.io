@@ -2,3 +2,29 @@
 .DS_Store
 llm_analyzer.log
 scripts/llm_analyzer.log
+
+# Python artifacts
+*.pyc
+__pycache__/
+.mypy_cache/
+.coverage
+
+# Node modules
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# IDE/config files
+.vscode/
+.idea/
+
+# Dependency directories
+venv/
+
+# Local overrides
+override*
+
+# Debug files
+debug*.json
